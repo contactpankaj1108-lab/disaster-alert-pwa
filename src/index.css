@@ -1,0 +1,360 @@
+:root {
+  /* Natural White & Grey Foundation */
+  --bg-main: #f8fafc;         /* Clean soft off-white/light grey */
+  --bg-surface: #ffffff;      /* Pure white for header, cards, panels */
+  --bg-card: #ffffff;         /* Pure white cards */
+  --bg-card-hover: #f8fafc;   /* Very subtle hover */
+  --bg-subtle: #f1f5f9;       /* Light grey for containers/chips/metrics */
+  --border-color: #e2e8f0;    /* Crisp light slate grey border */
+  --border-subtle: #f1f5f9;
+  --border-focus: #cbd5e1;
+  
+  /* High Readability Slate Text */
+  --text-primary: #0f172a;    /* Slate-900: Deep dark slate for headers and titles */
+  --text-secondary: #475569;  /* Slate-600: Neutral grey for descriptions */
+  --text-muted: #64748b;      /* Slate-500: Subdued metadata */
+  
+  /* Emergency Status Colors - Refined for Light Theme */
+  --status-normal: #16a34a;
+  --status-normal-bg: #f0fdf4;
+  --status-normal-border: #bbf7d0;
+
+  --status-watch: #d97706;
+  --status-watch-bg: #fffbeb;
+  --status-watch-border: #fde68a;
+
+  --status-warning: #ea580c;
+  --status-warning-bg: #fff7ed;
+  --status-warning-border: #fed7aa;
+
+  --status-emergency: #dc2626;
+  --status-emergency-bg: #fef2f2;
+  --status-emergency-border: #fecaca;
+
+  /* Modern Slate & Charcoal Accents */
+  --accent-primary: #1e293b;
+  --accent-blue: #2563eb;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* App Container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Top Navigation & Brand Header */
+.app-header {
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.85rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.brand-icon-wrapper {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+}
+
+.brand-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.brand-pill {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.brand-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.header-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Status Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+}
+
+.badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.badge.normal {
+  background: var(--status-normal-bg);
+  color: #15803d;
+  border-color: var(--status-normal-border);
+}
+.badge.normal .badge-dot {
+  background: #16a34a;
+}
+
+.badge.watch {
+  background: var(--status-watch-bg);
+  color: #b45309;
+  border-color: var(--status-watch-border);
+}
+.badge.watch .badge-dot {
+  background: #d97706;
+}
+
+.badge.warning {
+  background: var(--status-warning-bg);
+  color: #c2410c;
+  border-color: var(--status-warning-border);
+}
+.badge.warning .badge-dot {
+  background: #ea580c;
+}
+
+.badge.emergency {
+  background: var(--status-emergency-bg);
+  color: #b91c1c;
+  border-color: var(--status-emergency-border);
+}
+.badge.emergency .badge-dot {
+  background: #dc2626;
+}
+
+.badge.online {
+  background: var(--status-normal-bg);
+  color: #15803d;
+  border-color: var(--status-normal-border);
+}
+.badge.online .badge-dot {
+  background: #16a34a;
+}
+
+.badge.offline {
+  background: var(--status-emergency-bg);
+  color: #b91c1c;
+  border-color: var(--status-emergency-border);
+}
+.badge.offline .badge-dot {
+  background: #dc2626;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+  overflow-x: auto;
+  padding-bottom: 0.15rem;
+}
+
+.tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 0.42rem 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease-in-out;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.tab-btn.active {
+  background: #1e293b;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1;
+  max-width: 1220px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.25rem 1rem;
+}
+
+/* General Card */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0f172a;
+}
+
+/* App Footer */
+.app-footer {
+  border-top: 1px solid var(--border-color);
+  padding: 1.25rem 1rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .brand-title {
+    font-size: 1.05rem;
+  }
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .header-badges {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .main-content {
+    padding: 1rem 0.75rem;
+  }
+}
+
+/* Map & Marker Styling */
+@keyframes user-radar-pulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.custom-leaflet-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-user-marker {
+  background: transparent !important;
+  border: none !important;
+  z-index: 3000 !important;
+}
+
+/* Leaflet Popups in Light Mode */
+.leaflet-popup-content-wrapper {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff !important;
+}
+
+/* Low-Bandwidth & Data Saver Mode Optimizations */
+.data-saver-mode * {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+.data-saver-mode .custom-user-marker div:first-child {
+  animation: none !important;
+  display: none !important;
+}
+
+.data-saver-mode .card,
+.data-saver-mode .alert-card,
+.data-saver-mode .leaflet-popup-content-wrapper {
+  box-shadow: none !important;
+}
+
+/* Map Tile Background */
+.leaflet-tile {
+  background: #f1f5f9;
+}
