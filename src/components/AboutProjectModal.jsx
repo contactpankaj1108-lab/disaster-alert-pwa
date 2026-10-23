@@ -1,7 +1,6 @@
 import React from 'react';
 import { 
   X, 
-  GraduationCap, 
   Code2, 
   Wifi, 
   MapPin, 
@@ -64,14 +63,14 @@ export default function AboutProjectModal({ isOpen, onClose }) {
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <GraduationCap size={22} color="#60a5fa" />
+              <ShieldCheck size={22} color="#60a5fa" />
             </div>
             <div>
               <h2 style={{ fontSize: '1.2rem', fontWeight: '700', margin: 0, color: '#ffffff' }}>
                 ResQAlert Project Overview
               </h2>
               <p style={{ fontSize: '0.78rem', color: '#94a3b8', margin: 0 }}>
-                Final Year B.Tech Project • Computer Science & Engineering
+                Disaster Warning & Emergency Resource Network
               </p>
             </div>
           </div>
@@ -185,7 +184,7 @@ export default function AboutProjectModal({ isOpen, onClose }) {
           borderBottomLeftRadius: '12px',
           borderBottomRightRadius: '12px'
         }}>
-          <span>ResQAlert • Capstone Project Submission</span>
+          <span>ResQAlert • Emergency Crisis Response Platform</span>
           <button
             onClick={onClose}
             style={{

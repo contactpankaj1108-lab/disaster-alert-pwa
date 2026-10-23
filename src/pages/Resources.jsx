@@ -4,7 +4,7 @@ import ResourceMap from '../components/ResourceMap';
 import ResourceFilter from '../components/ResourceFilter';
 import { getResourcesWithDistance } from '../data/emergencyResources';
 
-export default function Resources({ location, initialFilter = 'all' }) {
+export default function Resources({ location, initialFilter = 'all', onOpenReportHazard }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTypes, setSelectedTypes] = useState(
     initialFilter && initialFilter !== 'all' ? [initialFilter] : ['hospital', 'police', 'fire', 'shelter']
@@ -109,7 +109,7 @@ export default function Resources({ location, initialFilter = 'all' }) {
         {/* Demo Data Disclaimer Banner */}
         <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <Info size={14} color="#64748b" />
-          <span>Notice: Facilities are from verified local offline datasets for simulation and demonstration. In real-world emergencies, always dial <strong>112</strong>.</span>
+          <span>Notice: Facilities are loaded from verified offline regional datasets. In immediate emergencies, call <strong>112</strong> or <strong>108</strong>.</span>
         </div>
       </div>
 
@@ -132,6 +132,7 @@ export default function Resources({ location, initialFilter = 'all' }) {
             resources={filteredResources}
             selectedResource={selectedResource}
             onSelectResource={setSelectedResource}
+            onOpenReportHazard={onOpenReportHazard}
           />
         </div>
 

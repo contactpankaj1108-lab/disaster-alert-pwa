@@ -4,9 +4,10 @@
 [![Platform: Web / PWA](https://img.shields.io/badge/Platform-PWA%20(Desktop%20%26%20Mobile)-success.svg)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
 [![Architecture: 100% Software-Only](https://img.shields.io/badge/Hardware-Zero%20External%20Sensors-brightgreen.svg)]()
 [![React 19](https://img.shields.io/badge/React-19.0-61dafb.svg)](https://react.dev/)
-[![Build Status: Passing](https://img.shields.io/badge/Tests-20%2F20%20Passed-brightgreen.svg)]()
+[![Tests Passing](https://img.shields.io/badge/Tests-50%2F50%20Passed-brightgreen.svg)]()
+[![Phase 1 Integrated](https://img.shields.io/badge/Phase%201-SOS%20%2B%20Command%20%2B%20Queue%20%2B%20Hazards-blueviolet.svg)]()
 
-A client-side, offline-first Progressive Web Application (PWA) engineered to provide hyper-localized natural disaster early warnings, automated life-safety guidance, and interactive emergency facility routing (Hospitals, Police, Fire, Shelters) without requiring external hardware modules, physical IoT transceivers, or paid third-party subscriptions.
+A client-side, offline-first Progressive Web Application (PWA) engineered to provide hyper-localized natural disaster early warnings, automated life-safety guidance, interactive emergency facility routing, **Emergency SOS broadcasts**, **authenticated authority command dispatch**, **resilient offline SOS queuing**, and **geotagged community hazard reporting**.
 
 Developed as a Final Year Computer Science & Engineering (B.Tech CSE) Capstone Project.
 
@@ -15,15 +16,15 @@ Developed as a Final Year Computer Science & Engineering (B.Tech CSE) Capstone P
 ## Table of Contents
 1. [Executive Summary & Problem Statement](#1-executive-summary--problem-statement)
 2. [100% Software-Only Compliance Statement](#2-100-software-only-compliance-statement)
-3. [Key Technical Features](#3-key-technical-features)
+3. [Phase 1 Integrated Feature Architecture](#3-phase-1-integrated-feature-architecture)
 4. [System Architecture & Data Flow](#4-system-architecture--data-flow)
-5. [Mathematical & Algorithmic Foundations](#5-mathematical--algorithmic-foundations)
-6. [Offline Storage & Service Worker Strategy](#6-offline-storage--service-worker-strategy)
-7. [Automated Verification & Testing Suite](#7-automated-verification--testing-suite)
-8. [Usability Study Protocol & Results (N=8)](#8-usability-study-protocol--results-n8)
+5. [Authority Command Center & Demo Accounts](#5-authority-command-center--demo-accounts)
+6. [Offline SOS Queueing & Safe Exponential Retry](#6-offline-sos-queueing--safe-exponential-retry)
+7. [Geotagged Community Hazard Reporting Pipeline](#7-geotagged-community-hazard-reporting-pipeline)
+8. [Automated Verification & Testing Suite (50/50 Tests)](#8-automated-verification--testing-suite-5050-tests)
 9. [Viva Voce Technical Defense Q&A](#9-viva-voce-technical-defense-qa)
-10. [Resume & Portfolio Project Description](#10-resume--portfolio-project-description)
-11. [Installation & Local Deployment Guide](#11-installation--local-deployment-guide)
+10. [Installation & Windows PowerShell Setup Guide](#10-installation--windows-powershell-setup-guide)
+11. [Security, Privacy & Known Limitations](#11-security-privacy--known-limitations)
 
 ---
 
@@ -272,69 +273,202 @@ Participants were instructed to complete 4 critical emergency response tasks on 
 
 ---
 
-## 9. Viva Voce Technical Defense Q&A
+---
 
-This section provides authoritative, academically rigorous answers to potential questions during the capstone technical defense:
+## 5. Authority Command Center & Demo Accounts
 
-### Q1: Why build a Progressive Web App (PWA) instead of a native Android or iOS application?
-**Answer:** In acute humanitarian crisis situations, native applications present three critical barriers: (1) downloading an APK or App Store package requires 30–100 MB of stable bandwidth, which is impossible on damaged networks; (2) OS-specific approvals delay rollout; and (3) cross-device compatibility requires maintaining separate Swift and Kotlin codebases. PWAs install in under 2 MB, execute cross-platform across iOS, Android, Windows, and Linux via any standards-compliant browser, and provide instant offline execution through Service Workers.
+ResQAlert includes an integrated, role-based Authority Command Center designed for crisis dispatchers and first responders.
 
-### Q2: Why is the Haversine formula preferred over simple Euclidean $(x_2 - x_1)^2 + (y_2 - y_1)^2$ distance?
-**Answer:** The Euclidean metric assumes a flat Cartesian $(x,y)$ plane. However, Earth is an oblate spheroid. Meridians of longitude converge toward the poles, meaning a degree of longitude is ~111 km at the equator but shrinks to ~78 km at 45° latitude. Euclidean calculation introduces progressive spatial errors exceeding 20–40% at higher latitudes. The Haversine formula accounts for the spherical geometry and radius of Earth ($R \approx 6,371\text{ km}$), computing the true great-circle distance with sub-meter accuracy over regional bounds.
+> **Academic Evaluation Notice:** This software is an academic engineering capstone demonstration. It is strictly simulated and **not connected to real government emergency dispatches or municipal authorities**.
 
-### Q3: How does your system guarantee data integrity when the browser is disconnected from the internet?
-**Answer:** We implement an offline-first storage hierarchy combining the Service Worker Cache Storage API for application assets and IndexedDB for dynamic telemetry. When online, every telemetry fetch completes a write-through transaction into IndexedDB. When disconnected, the fetch event is trapped by the Service Worker; the application boots instantly from local cache and displays a diagnostic banner with the exact age of the cached telemetry, preventing stale data confusion.
+### Role-Based Access Control (RBAC) Matrix
 
-### Q4: How is user privacy protected regarding real-time geographic coordinates?
-**Answer:** All coordinate computations and facility distance rankings are executed **100% on the client CPU**. The user's exact latitude and longitude are never transmitted to an external analytics or tracking server. Weather and seismic queries are rounded to 2 decimal places when queried from Open-Meteo, preventing pinpoint user identification. Furthermore, users can deny browser GPS permissions and select predefined regional centroids without breaking functionality.
+| Role | Access Permissions | Capabilities & Workflow |
+| :--- | :--- | :--- |
+| **Citizen / Public** | Public UI (`/`) | Broadcast emergency SOS, review personal requests, submit hazard reports, view verified hazards. |
+| **First Responder** | Command Center (`/authority`) | View assigned incidents, update operational rescue status (`Responding`, `Resolved`), commit field notes. |
+| **Chief Dispatcher** | Command Center (`/authority`) | Full operational incident triage, assign quick response units, review and verify/reject community hazards. |
 
-### Q5: What is the purpose of the 45-second rate limiter and Debouncing mechanisms?
-**Answer:** During disaster situations, telecommunication cells suffer from severe bandwidth starvation. Unconstrained auto-polling or rapid search keystroke fetches would overload the radio transceiver, deplete device battery, and trigger HTTP 429 (Too Many Requests) API bans. Debouncing (250ms) ensures filter searches only execute once typing pauses, and the 45-second throttle ensures that background polling is constrained to essential updates.
+### Built-in Demonstration Accounts
+
+For academic defense and interactive evaluator testing, pre-configured evaluation accounts are seeded into `server/data/db.json` with cryptographically salted `scryptSync` password hashes:
+
+| Role | Email | Password | Pre-assigned Unit |
+| :--- | :--- | :--- | :--- |
+| **Chief Dispatcher** | `dispatcher@resqalert.org` | `DispatchPass123!` | Command Dispatch Hub |
+| **First Responder** | `responder@resqalert.org` | `ResponderPass123!` | Quick Response Unit 1 (Officer Vikram) |
+
+*(To disable demo accounts in production environments, set `DEMO_ACCOUNTS_ENABLED=false` in `.env`)*.
 
 ---
 
-## 10. Resume & Portfolio Project Description
+## 6. Offline SOS Queueing & Safe Exponential Retry
 
-**Disaster Alert & Emergency Resource PWA (React 19, JavaScript, PWA, Leaflet, IndexedDB)**
-- Architected an offline-first, client-side Progressive Web App (PWA) delivering real-time disaster advisories and emergency facility routing (Hospitals, Police, Fire, Shelters) without external hardware sensors.
-- Implemented the spherical **Haversine Geodesic Distance Formula** to rank and display critical facilities by proximity in $O(n \log n)$ time directly on the client CPU.
-- Engineered a dual-tier storage strategy using **Service Worker Cache Storage** for static assets and **IndexedDB** for offline telemetry persistence with automatic fallback to LocalStorage.
-- Integrated **Open-Meteo** and **USGS** APIs with a resilient 4.0-second network timeout, automated alert deduplication, and normalized crisis response protocols.
-- Built an automated 20-test CLI verification suite (`npm test`) and achieved an **89.3 / 100 System Usability Scale (SUS)** score across an 8-participant empirical study.
+When network connectivity drops during natural disasters or power blackouts:
+1. **Local Queueing:** The emergency distress call is recorded in IndexedDB (`sos_queue`) and mirrored to `localStorage` with a status strictly marked **`Pending transmission`**.
+2. **Offline Visual Indicator:** The UI immediately renders a high-visibility amber notice informing the citizen that their distress broadcast has not reached dispatch servers.
+3. **Exponential Backoff Progression:** When connectivity is restored, the client executes an idempotent retry sequence with progression:
+   $$\text{Delay}(n) = \text{Initial Delay} \times 2^n \quad (\text{e.g., } 2\text{s}, 4\text{s}, 8\text{s}, 16\text{s}, 32\text{s})$$
+4. **Idempotency Guarantee:** The server inspects the `clientGeneratedId`. If an incident was already acknowledged, the server returns the existing record without creating duplicate dispatch dispatches.
+5. **Background Sync & Fallback:** Registered for Service Worker `sync-sos-queue` event with a resilient foreground retry listener triggered by `window.ononline`.
+6. **Citizen Cancellation Option:** Citizens can review their unsent draft queue and safely delete accidental submissions after confirmation.
 
 ---
 
-## 11. Installation & Local Deployment Guide
+## 7. Geotagged Community Hazard Reporting Pipeline
 
-### Prerequisites
-- Modern web browser (Google Chrome, Microsoft Edge, Mozilla Firefox, or Brave)
-- Node.js (v18.0.0 or higher recommended)
-- Windows PowerShell or command terminal
+To crowdsource road blockages, fallen trees, and flash flooding without spreading panic:
+- **6 Supported Hazard Categories:** Flooded Road (`flooded_road`), Damaged Building (`damaged_building`), Blocked Road (`blocked_road`), Fallen Tree (`fallen_tree`), Active Fire (`fire`), and Other (`other`).
+- **Privacy & Firewall:** Every citizen submission is marked **`unverified`** by default and routed exclusively to the Dispatcher queue.
+- **Evidence Photos:** Accepts optional JPEG/PNG/WebP photographs with strict client and server-side file-size validation (maximum 2.0 MB).
+- **Public GIS Verification:** Only once a dispatcher verifies the hazard does it appear on the interactive citizen Leaflet map with a distinctive warning badge. Private citizen contact numbers and tokens are stripped from public feeds.
 
-### Quickstart Commands
+---
+
+## 8. Automated Verification & Testing Suite (50/50 Tests)
+
+The repository includes a comprehensive CLI test runner (`scripts/test-runner.js`) validating both client and server subsystems:
+
 ```powershell
-# 1. Clone or navigate to the project directory
-cd C:\Users\Preeti\disaster-alert-pwa
-
-# 2. Install dependencies
-npm install
-
-# 3. Execute automated test suite
 npm test
-
-# 4. Start local development server
-npm run dev
-
-# 5. Build production bundle
-npm run build
-
-# 6. Preview production bundle locally
-npm run preview
 ```
 
-Open `http://localhost:5173` in your browser. To test offline resilience, either disconnect Wi-Fi or click the **"⚡ Simulate Offline Mode"** button inside the top banner!
+### Test Suite Execution Output:
+```text
+======================================================
+  DISASTER ALERT PWA — AUTOMATED SUITE (PHASE 1)      
+======================================================
+
+Test Group 1: Coordinate Validation & Input Sanitization
+  ✔ PASS: Validates standard Kharar/Chandigarh coordinates
+  ✔ PASS: Rejects latitude > 90.0°
+  ✔ PASS: Rejects latitude < -90.0°
+  ✔ PASS: Rejects longitude > 180.0°
+  ✔ PASS: Rejects NaN inputs gracefully
+  ✔ PASS: Strips XSS tags from location text
+
+Test Group 2: Haversine Geodesic Distance Matrix
+  ✔ PASS: Haversine distance Kharar to Chd Sector 17 calculated as 12.17 km
+  ✔ PASS: Distance from point to itself is 0.00 km
+  ✔ PASS: Formats sub-kilometer distances in meters (450 m away)
+  ✔ PASS: Formats multi-kilometer distances in kilometers (5.2 km away)
+  ✔ PASS: Emergency facility dataset contains 14 verified records
+  ✔ PASS: All 4 critical facility categories are present
+  ✔ PASS: getResourcesWithDistance sorts results in ascending proximity order
+
+Test Group 3: Intelligent Alert Processing & Normalization
+  ✔ PASS: Deduplication successfully reduced 3 alerts to 2 unique alerts
+  ✔ PASS: Highest severity alert (Emergency) correctly placed at the top of the feed
+  ✔ PASS: Protective actions synthesized for flood alert
+  ✔ PASS: Synthesizes Drop, Cover, and Hold On for seismic events
+
+Test Group 4: Network Error Handling & Message Normalization
+  ✔ PASS: Maps network timeout to user-friendly latency advisory
+  ✔ PASS: Maps fetch failure to offline cache advisory
+  ✔ PASS: Maps 429 rate limit to cache reuse advisory
+
+Test Group 5: Emergency SOS Data Model & Server Idempotency
+  ✔ PASS: Validates precision SOS coordinates
+  ✔ PASS: Rejects fabricated out-of-bounds latitude
+  ✔ PASS: Generates standard server incident ID with SOS- prefix
+  ✔ PASS: Initial acknowledged server status is strictly Received
+  ✔ PASS: Preserves affected person count (4)
+  ✔ PASS: First transmission marked as non-duplicate (isDuplicate: false)
+  ✔ PASS: Server enforces idempotency: returns isDuplicate: true on duplicate retry
+  ✔ PASS: Idempotent retry references exact same incident ID
+
+Test Group 6: Authority Authentication & Role-Based Access Control
+  ✔ PASS: Generates 512-bit cryptographically secure password hash
+  ✔ PASS: Generates 128-bit random salt
+  ✔ PASS: Verifies correct password with timingSafeEqual
+  ✔ PASS: Rejects incorrect password
+  ✔ PASS: Generates signed token with payload and HMAC signature
+  ✔ PASS: Decodes and verifies valid token signature and role
+  ✔ PASS: Rejects tampered token with invalid signature
+  ✔ PASS: Demo dispatcher account present with dispatcher role
+  ✔ PASS: Demo responder account present with responder role
+
+Test Group 7: Offline SOS Queueing & Exponential Backoff Engine
+  ✔ PASS: Calculates correct exponential backoff retry delays (4s, 8s, 16s)
+  ✔ PASS: Locally queued SOS is strictly initialized with Pending transmission status
+  ✔ PASS: Never marked delivered prior to server HTTP acknowledgement
+
+Test Group 8: Geotagged Community Hazard Reporting & Privacy
+  ✔ PASS: Generates standard hazard ID with HAZ- prefix
+  ✔ PASS: New hazard report initialized strictly as unverified by default
+  ✔ PASS: Dispatcher can transition hazard status to verified
+  ✔ PASS: Records verification authority actor in report
+  ✔ PASS: Verified hazard appears in verified public hazards list
+
+Test Group 9: IDOR Privacy Guard & Incident Audit History
+  ✔ PASS: User A can access their own registered emergency SOS incidents
+  ✔ PASS: IDOR Protection: User B cannot access User A private incidents
+  ✔ PASS: Audit log records STATUS_CHANGED action
+  ✔ PASS: Audit log attributes action to actor and role
+  ✔ PASS: Audit log records ISO timestamp
+
+======================================================
+  TEST RESULTS: 50 PASSED, 0 FAILED (100% Pass Rate)
+======================================================
+```
+
+---
+
+## 9. Viva Voce Technical Defense Q&A
+
+### Q1: How does your system prevent IDOR (Insecure Direct Object Reference) vulnerabilities in emergency SOS broadcasts?
+**Answer:** Each client device generates a cryptographically randomized device token (`resqalert_user_token`) stored in client storage. When querying `/api/sos/my-requests`, the server strictly scopes query filtering to matching token references. Citizens cannot supply arbitrary incident IDs to harvest other individuals' coordinates or medical descriptions.
+
+### Q2: Why does the Service Worker explicitly bypass `/api/*` endpoints?
+**Answer:** PWA Cache Storage is designed for static assets (HTML, CSS, JS, tiles). Caching dynamic POST or PATCH emergency requests in generic Service Worker storage risks storing sensitive personally identifiable information (PII) or replaying stale authentication tokens. `/api/*` is designated Network-Only with an intelligent IndexedDB queue fallback.
+
+### Q3: What prevents duplicate incident spam if an offline citizen repeatedly presses Retry?
+**Answer:** Every SOS transmission includes a client-generated UUID (`clientGeneratedId`). The server database checks for existence of this key. If received again during a network reconnection burst, the server returns HTTP 200 with `isDuplicate: true` and the existing incident record, preventing duplicate responder dispatches.
+
+---
+
+## 10. Installation & Windows PowerShell Setup Guide
+
+### Environment Configuration
+Copy `.env.example` to create your local `.env`:
+```powershell
+Copy-Item .env.example .env
+```
+
+### Windows PowerShell Commands
+```powershell
+# 1. Navigate to project directory
+cd C:\Users\Preeti\disaster-alert-pwa
+
+# 2. Install dependencies (React 19, Leaflet, Express, CORS)
+npm install
+
+# 3. Run automated verification suite (50 tests)
+npm test
+
+# 4. Start Full-Stack Dev Server (Vite + Integrated API on Port 5173)
+npm run dev
+
+# 5. (Alternative) Run standalone Express backend on Port 3001
+npm run server
+
+# 6. Build production distribution bundle
+npm run build
+```
+
+Open `http://localhost:5173` in your browser.
+
+---
+
+## 11. Security, Privacy & Known Limitations
+
+1. **Localhost Exception:** Modern web browsers require a secure origin (`HTTPS`) to activate the Geolocation API and Service Worker Background Sync. Browsers grant an explicit development exception to `http://localhost` and `http://127.0.0.1`.
+2. **Background Sync OS Limitations:** If a mobile operating system forcibly kills the browser process or puts the device into extreme battery saver mode, Background Sync may defer execution until the browser process is re-opened by the user. ResQAlert compensates by implementing immediate foreground queue synchronization upon `window.ononline`.
+3. **Zero Fabricated Coordinates:** Coordinates are captured exclusively with explicit user consent via the W3C Geolocation API or manual input. Under no circumstances does the application fabricate coordinates.
+4. **Data Retention:** Incident data is stored in the local file database `server/data/db.json` and does not retain unneeded telemetry past academic demonstration evaluation.
 
 ---
 
 *ResQAlert Capstone Project — B.Tech Computer Science & Engineering.*  
-*Built with React 19, Vite, Leaflet, and standard Web APIs.*
+*Built with React 19, Vite, Leaflet, Express, and standard Web APIs.*
+

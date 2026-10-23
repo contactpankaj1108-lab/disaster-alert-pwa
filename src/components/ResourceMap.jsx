@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
-import { Crosshair } from 'lucide-react';
+import { Crosshair, AlertTriangle, Plus } from 'lucide-react';
+import { fetchVerifiedHazards } from '../services/hazardService';
 
 // Custom DivIcons created with inline SVGs/CSS (100% offline-friendly, no broken image links)
 const createDivIcon = (symbol, bgColor, borderColor) => {
@@ -74,18 +75,42 @@ const TYPE_CONFIG = {
   shelter: { icon: '🏠', bg: '#10b981', border: '#86efac' }
 };
 
+const HAZARD_ICONS = {
+  flooded_road: '🌊',
+  damaged_building: '🏚️',
+  blocked_road: '🚧',
+  fallen_tree: '🪵',
+  fire: '🔥',
+  other: '⚠️'
+};
+
 export default function ResourceMap({
   userLocation,
   resources = [],
   selectedResource,
-  onSelectResource
+  onSelectResource,
+  onOpenReportHazard
 }) {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersLayerRef = useRef(null);
+  const hazardsLayerRef = useRef(null);
   const userLayerRef = useRef(null);
   const userMarkerRef = useRef(null);
   const markersMapRef = useRef({});
+
+  const [verifiedHazards, setVerifiedHazards] = useState([]);
+  const [showHazards, setShowHazards] = useState(true);
+
+  // Load verified hazards
+  const loadHazards = async () => {
+    const list = await fetchVerifiedHazards();
+    setVerifiedHazards(list);
+  };
+
+  useEffect(() => {
+    loadHazards();
+  }, []);
 
   // Initialize Map
   useEffect(() => {
@@ -107,9 +132,13 @@ export default function ResourceMap({
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
 
-      // Separate layer for resources
+      // Layer for emergency resources
       const markersLayer = L.layerGroup().addTo(map);
       markersLayerRef.current = markersLayer;
+
+      // Layer for verified hazards
+      const hazardsLayer = L.layerGroup().addTo(map);
+      hazardsLayerRef.current = hazardsLayer;
 
       // Dedicated layer for user marker (highest z-index)
       const userLayer = L.layerGroup().addTo(map);
@@ -124,6 +153,7 @@ export default function ResourceMap({
         mapInstanceRef.current = null;
         userLayerRef.current = null;
         markersLayerRef.current = null;
+        hazardsLayerRef.current = null;
         userMarkerRef.current = null;
         markersMapRef.current = {};
       }
@@ -197,11 +227,6 @@ export default function ResourceMap({
             </div>
             ${item.phone ? `<div style="font-size: 11px; font-weight: 600; color: #0369a1; margin-bottom: 2px;">📞 ${item.phone}</div>` : ''}
             ${item.capacity ? `<div style="font-size: 11px; color: #15803d; margin-bottom: 2px;">${item.capacity}</div>` : ''}
-            ${item.services && item.services.length > 0 ? `
-              <div style="display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px;">
-                ${item.services.slice(0, 3).map(s => `<span style="font-size: 9px; background: #f1f5f9; color: #475569; padding: 1px 4px; border-radius: 3px;">${s}</span>`).join('')}
-              </div>
-            ` : ''}
           </div>
         `);
 
@@ -212,6 +237,70 @@ export default function ResourceMap({
       });
     });
   }, [resources, onSelectResource]);
+
+  // Update Verified Hazard Markers
+  useEffect(() => {
+    if (!hazardsLayerRef.current || !mapInstanceRef.current) return;
+    const hazardsLayer = hazardsLayerRef.current;
+    hazardsLayer.clearLayers();
+
+    if (!showHazards) return;
+
+    verifiedHazards.forEach((haz) => {
+      if (!haz.coordinates?.latitude || !haz.coordinates?.longitude) return;
+
+      const symbol = HAZARD_ICONS[haz.hazardType] || '⚠️';
+      const icon = L.divIcon({
+        className: 'custom-hazard-marker',
+        html: `
+          <div style="
+            background: #d97706;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            cursor: pointer;
+          ">
+            ${symbol}
+          </div>
+        `,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -16]
+      });
+
+      L.marker([haz.coordinates.latitude, haz.coordinates.longitude], { icon })
+        .addTo(hazardsLayer)
+        .bindPopup(`
+          <div style="font-family: sans-serif; color: #0f172a; min-width: 200px; padding: 2px;">
+            <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 3px;">
+              <span style="font-size: 14px;">${symbol}</span>
+              <strong style="font-size: 13px; color: #92400e;">${haz.title}</strong>
+            </div>
+            <div style="font-size: 10px; font-weight: 700; color: #15803d; background: #dcfce7; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 4px;">
+              ✓ Verified Community Hazard
+            </div>
+            <div style="font-size: 12px; color: #334155; margin-bottom: 4px;">
+              ${haz.description}
+            </div>
+            <div style="font-size: 10px; color: #64748b;">
+              Verified by: ${haz.verifiedBy || 'Dispatch Officer'} • Updated: ${new Date(haz.updatedAt).toLocaleTimeString()}
+            </div>
+            ${haz.photoUrl ? `
+              <div style="margin-top: 6px;">
+                <img src="${haz.photoUrl}" alt="Evidence" style="width: 100%; max-height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #cbd5e1;" />
+              </div>
+            ` : ''}
+          </div>
+        `);
+    });
+  }, [verifiedHazards, showHazards]);
 
   // Focus & open popup when a resource is selected from the list
   useEffect(() => {
@@ -227,7 +316,6 @@ export default function ResourceMap({
     }
   }, [selectedResource]);
 
-  // Recenter map button handler
   const handleRecenter = () => {
     if (!mapInstanceRef.current || !userLocation) return;
     mapInstanceRef.current.setView([userLocation.latitude, userLocation.longitude], 14, {
@@ -242,7 +330,64 @@ export default function ResourceMap({
     <div style={{ position: 'relative', width: '100%', height: '100%', borderRadius: '8px', overflow: 'hidden' }}>
       <div ref={mapContainerRef} style={{ width: '100%', height: '100%', minHeight: '450px', background: '#f1f5f9' }} />
 
-      {/* Floating Recenter Control */}
+      {/* Floating Controls Top-Right */}
+      <div 
+        style={{
+          position: 'absolute',
+          top: '12px',
+          right: '12px',
+          zIndex: 500,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.5rem',
+          alignItems: 'flex-end'
+        }}
+      >
+        {onOpenReportHazard && (
+          <button
+            onClick={onOpenReportHazard}
+            style={{
+              background: '#d97706',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '0.45rem 0.75rem',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.3rem',
+              fontSize: '0.78rem',
+              fontWeight: '700'
+            }}
+          >
+            <Plus size={14} /> Report Hazard
+          </button>
+        )}
+
+        <button
+          onClick={() => setShowHazards((prev) => !prev)}
+          style={{
+            background: showHazards ? '#ffffff' : '#f1f5f9',
+            color: showHazards ? '#d97706' : '#64748b',
+            border: '1px solid #cbd5e1',
+            borderRadius: '6px',
+            padding: '0.4rem 0.65rem',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.3rem',
+            fontSize: '0.74rem',
+            fontWeight: '600'
+          }}
+        >
+          <AlertTriangle size={13} />
+          {showHazards ? `Hazards (${verifiedHazards.length}) Visible` : 'Hazards Hidden'}
+        </button>
+      </div>
+
+      {/* Floating Recenter Control Bottom-Right */}
       <button
         onClick={handleRecenter}
         title="Recenter on My Location"

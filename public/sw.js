@@ -5,7 +5,7 @@
  * 2. Network-First with Cache Fallback for Public Disaster/Weather APIs
  */
 
-const CACHE_NAME = 'disaster-alert-cache-v1';
+const CACHE_NAME = 'disaster-alert-cache-v2';
 
 // Critical static assets to precache on install
 const PRECACHE_ASSETS = [
@@ -54,6 +54,27 @@ self.addEventListener('fetch', (event) => {
 
   // Ignore non-GET requests and chrome-extension schemes
   if (request.method !== 'GET' || url.protocol.startsWith('chrome-extension')) {
+    return;
+  }
+
+  // Development Mode: Never intercept Vite HMR, source scripts, or virtual modules
+  if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+    if (url.pathname.startsWith('/@') || url.pathname.startsWith('/src/') || url.pathname.startsWith('/node_modules/') || url.search.includes('t=')) {
+      return;
+    }
+  }
+
+  // Strategy 0: Sensitive ResQAlert Backend APIs (/api/*)
+  // Strictly Network-Only. Never cache emergency SOS payloads, auth tokens, or incident reports in generic Cache Storage.
+  if (url.pathname.startsWith('/api')) {
+    event.respondWith(
+      fetch(request).catch(() => {
+        return new Response(JSON.stringify({ offline: true, error: 'API unreachable. Offline mode active.' }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      })
+    );
     return;
   }
 
@@ -141,4 +162,17 @@ self.addEventListener('fetch', (event) => {
         });
     })
   );
+});
+
+// Background Sync Event: Safe trigger for offline SOS queue synchronization
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-sos-queue') {
+    event.waitUntil(
+      self.clients.matchAll({ includeUncontrolled: true, type: 'window' }).then((clients) => {
+        clients.forEach((client) => {
+          client.postMessage({ type: 'TRIGGER_SOS_SYNC' });
+        });
+      })
+    );
+  }
 });

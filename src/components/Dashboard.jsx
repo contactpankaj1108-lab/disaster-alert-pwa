@@ -12,7 +12,9 @@ import {
   Thermometer, 
   ArrowRight,
   Clock,
-  RefreshCw
+  RefreshCw,
+  AlertOctagon,
+  ShieldAlert
 } from 'lucide-react';
 import LocationStatus from './LocationStatus';
 import AlertCard from './AlertCard';
@@ -35,7 +37,10 @@ export default function Dashboard({
   onNavigate,
   onRefreshData,
   isSyncing = false,
-  isOfflineFallback = false
+  isOfflineFallback = false,
+  onOpenSosModal,
+  onOpenMySosRequests,
+  onOpenHazardModal
 }) {
   return (
     <div className="dashboard-container" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -49,6 +54,125 @@ export default function Dashboard({
         onRequestLocation={onRequestLocation}
         onSelectManualLocation={onSelectManualLocation}
       />
+
+      {/* 1.5 Emergency SOS & Community Hazard Action Strip (Phase 1) */}
+      <div 
+        style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+          gap: '1rem',
+          alignItems: 'stretch'
+        }}
+      >
+        {/* Prominent Emergency SOS Button */}
+        <button
+          onClick={onOpenSosModal}
+          style={{
+            background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '10px',
+            padding: '1.1rem 1.25rem',
+            boxShadow: '0 8px 20px rgba(220, 38, 38, 0.35)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            textAlign: 'left'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+            <div 
+              style={{
+                width: '46px',
+                height: '46px',
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}
+            >
+              <AlertOctagon size={26} color="#ffffff" />
+            </div>
+            <div>
+              <div style={{ fontSize: '1.05rem', fontWeight: '800', letterSpacing: '0.02em', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                BROADCAST EMERGENCY SOS
+              </div>
+              <div style={{ fontSize: '0.78rem', color: '#fee2e2', marginTop: '0.15rem' }}>
+                Distress call with consent GPS to first responders
+              </div>
+            </div>
+          </div>
+          <ArrowRight size={20} color="#fee2e2" />
+        </button>
+
+        {/* Hazard Reporting & Status Shortcut Card */}
+        <div 
+          style={{ 
+            display: 'grid', 
+            gridTemplateColumns: '1fr 1fr', 
+            gap: '0.75rem' 
+          }}
+        >
+          {/* Report Hazard */}
+          <button
+            onClick={onOpenHazardModal}
+            className="tab-btn"
+            style={{
+              background: '#ffffff',
+              border: '2px solid #fde68a',
+              borderRadius: '10px',
+              padding: '0.85rem 0.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.35rem',
+              cursor: 'pointer',
+              textAlign: 'center',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
+            }}
+          >
+            <AlertTriangle size={24} color="#d97706" />
+            <span style={{ fontSize: '0.88rem', fontWeight: '700', color: '#92400e' }}>
+              Report Hazard
+            </span>
+            <span style={{ fontSize: '0.72rem', color: '#64748b' }}>
+              Road / Flooding risk
+            </span>
+          </button>
+
+          {/* My SOS Status */}
+          <button
+            onClick={onOpenMySosRequests}
+            className="tab-btn"
+            style={{
+              background: '#ffffff',
+              border: '1px solid #cbd5e1',
+              borderRadius: '10px',
+              padding: '0.85rem 0.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.35rem',
+              cursor: 'pointer',
+              textAlign: 'center',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
+            }}
+          >
+            <ShieldAlert size={24} color="#0284c7" />
+            <span style={{ fontSize: '0.88rem', fontWeight: '700', color: '#0f172a' }}>
+              My SOS Status
+            </span>
+            <span style={{ fontSize: '0.72rem', color: '#64748b' }}>
+              Track transmissions
+            </span>
+          </button>
+        </div>
+      </div>
 
       {/* 2. Emergency Status & Environmental Conditions Banner */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>

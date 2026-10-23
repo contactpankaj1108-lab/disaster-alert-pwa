@@ -1,0 +1,588 @@
+{
+  "users": [
+    {
+      "id": "usr-dispatcher-01",
+      "email": "dispatcher@resqalert.org",
+      "name": "Chief Dispatcher Rao",
+      "role": "dispatcher",
+      "passwordHash": "3f80fed5a1524041c555ff67173e5faf05c0b00a0b555ca9e925486319a734d495b1a2d4fe8c0d605ec9ad09db882cd3d964a922f77d9edd6a927034284c3291",
+      "salt": "52889d264c521da3458fee12358e91f4",
+      "createdAt": "2026-09-01T08:00:00.000Z"
+    },
+    {
+      "id": "usr-responder-01",
+      "email": "responder@resqalert.org",
+      "name": "Officer Vikram (Quick Response Unit 1)",
+      "role": "responder",
+      "passwordHash": "b5400786471c77848109cfa8134f3ee288aa4e62a1aca0190f55b044c517e1a75612ba7b1a26a319bca0ed2f0160cd464ba74b94a6da4984cdaf18d8defd55bf",
+      "salt": "4da43478a9b6a359b323c954a729d040",
+      "createdAt": "2026-09-01T08:00:00.000Z"
+    }
+  ],
+  "incidents": [
+    {
+      "id": "SOS-2026-DEMO-01",
+      "clientGeneratedId": "client-sos-seed-01",
+      "userToken": "token-demo-citizen-01",
+      "contactName": "Aarav Sharma",
+      "contactPhone": "+91 98765 43210",
+      "category": "flood",
+      "severity": "high",
+      "affectedCount": 3,
+      "description": "Rising water in basement, family stuck on ground floor. Power lines submerged.",
+      "coordinates": {
+        "latitude": 30.7499,
+        "longitude": 76.6411,
+        "accuracy": 12
+      },
+      "locationSource": "Browser GPS (High Accuracy)",
+      "locationCaptureTime": "2026-10-16T03:16:50.062Z",
+      "status": "Resolved",
+      "assignedResponderId": "usr-responder-01",
+      "assignedResponderName": "Officer Vikram (Quick Response Unit 1)",
+      "createdAt": "2026-10-16T03:16:50.062Z",
+      "updatedAt": "2026-10-23T08:47:04.423Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-16T03:16:50.062Z",
+          "action": "SOS_RECEIVED",
+          "actorName": "Aarav Sharma",
+          "actorRole": "citizen",
+          "details": "Emergency SOS incident registered by citizen"
+        },
+        {
+          "timestamp": "2026-10-16T03:46:50.062Z",
+          "action": "STATUS_UPDATED",
+          "actorName": "Chief Dispatcher Rao",
+          "actorRole": "dispatcher",
+          "details": "Assigned to Officer Vikram (Quick Response Unit 1). Status changed to Assigned."
+        },
+        {
+          "timestamp": "2026-10-23T08:47:04.423Z",
+          "action": "STATUS_CHANGED",
+          "actorName": "Officer Vikram (Quick Response Unit 1)",
+          "actorRole": "responder",
+          "details": "Status transitioned from Assigned to Resolved."
+        }
+      ]
+    },
+    {
+      "id": "SOS-1792124210067-138CFC",
+      "clientGeneratedId": "test-client-sos-1792124209872",
+      "userToken": "test-citizen-token-123",
+      "contactName": "Pooja Verma",
+      "contactPhone": "+91 98888 12345",
+      "category": "trapped",
+      "severity": "high",
+      "affectedCount": 4,
+      "description": "Ground floor water surge, 4 people trapped near terrace door",
+      "coordinates": {
+        "latitude": 30.7499,
+        "longitude": 76.6411,
+        "accuracy": 8
+      },
+      "locationSource": "Browser GPS (High Accuracy)",
+      "locationCaptureTime": "2026-10-16T04:16:50.067Z",
+      "status": "Received",
+      "assignedResponderId": null,
+      "assignedResponderName": null,
+      "createdAt": "2026-10-16T04:16:50.067Z",
+      "updatedAt": "2026-10-16T04:16:50.067Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-16T04:16:50.067Z",
+          "action": "SOS_RECEIVED",
+          "actorName": "Pooja Verma",
+          "actorRole": "citizen",
+          "details": "Incident received by server. Category: trapped, People affected: 4"
+        }
+      ]
+    },
+    {
+      "id": "SOS-1792124210498-B41AD6",
+      "clientGeneratedId": "client-user-a-sos",
+      "userToken": "user-token-alpha-999",
+      "contactName": "Anonymous",
+      "contactPhone": null,
+      "category": "fire",
+      "severity": "high",
+      "affectedCount": 2,
+      "description": "",
+      "coordinates": {
+        "latitude": 30.74,
+        "longitude": 76.65,
+        "accuracy": null
+      },
+      "locationSource": "Browser Geolocation",
+      "locationCaptureTime": "2026-10-16T04:16:50.498Z",
+      "status": "Responding",
+      "assignedResponderId": null,
+      "assignedResponderName": null,
+      "createdAt": "2026-10-16T04:16:50.498Z",
+      "updatedAt": "2026-10-23T08:53:43.035Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-16T04:16:50.498Z",
+          "action": "SOS_RECEIVED",
+          "actorName": "Citizen",
+          "actorRole": "citizen",
+          "details": "Incident received by server. Category: fire, People affected: 2"
+        },
+        {
+          "timestamp": "2026-10-16T04:16:50.542Z",
+          "action": "STATUS_CHANGED",
+          "actorName": "Officer Vikram",
+          "actorRole": "responder",
+          "details": "Status transitioned from Received to Responding. Note: Quick response vehicle deployed"
+        },
+        {
+          "timestamp": "2026-10-16T04:17:50.910Z",
+          "action": "STATUS_CHANGED",
+          "actorName": "Officer Vikram",
+          "actorRole": "responder",
+          "details": "Status transitioned from Responding to Responding. Note: Quick response vehicle deployed"
+        },
+        {
+          "timestamp": "2026-10-16T04:19:48.696Z",
+          "action": "STATUS_CHANGED",
+          "actorName": "Officer Vikram",
+          "actorRole": "responder",
+          "details": "Status transitioned from Responding to Responding. Note: Quick response vehicle deployed"
+        },
+        {
+          "timestamp": "2026-10-16T05:11:57.166Z",
+          "action": "STATUS_CHANGED",
+          "actorName": "Officer Vikram",
+          "actorRole": "responder",
+          "details": "Status transitioned from Responding to Responding. Note: Quick response vehicle deployed"
+        },
+        {
+          "timestamp": "2026-10-23T08:53:43.035Z",
+          "action": "STATUS_CHANGED",
+          "actorName": "Officer Vikram",
+          "actorRole": "responder",
+          "details": "Status transitioned from Responding to Responding. Note: Quick response vehicle deployed"
+        }
+      ]
+    },
+    {
+      "id": "SOS-1792124270405-9358AE",
+      "clientGeneratedId": "test-client-sos-1792124270392",
+      "userToken": "test-citizen-token-123",
+      "contactName": "Pooja Verma",
+      "contactPhone": "+91 98888 12345",
+      "category": "trapped",
+      "severity": "high",
+      "affectedCount": 4,
+      "description": "Ground floor water surge, 4 people trapped near terrace door",
+      "coordinates": {
+        "latitude": 30.7499,
+        "longitude": 76.6411,
+        "accuracy": 8
+      },
+      "locationSource": "Browser GPS (High Accuracy)",
+      "locationCaptureTime": "2026-10-16T04:17:50.396Z",
+      "status": "Received",
+      "assignedResponderId": null,
+      "assignedResponderName": null,
+      "createdAt": "2026-10-16T04:17:50.396Z",
+      "updatedAt": "2026-10-16T04:17:50.396Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-16T04:17:50.396Z",
+          "action": "SOS_RECEIVED",
+          "actorName": "Pooja Verma",
+          "actorRole": "citizen",
+          "details": "Incident received by server. Category: trapped, People affected: 4"
+        }
+      ]
+    },
+    {
+      "id": "SOS-1792124388227-20142D",
+      "clientGeneratedId": "test-client-sos-1792124388220",
+      "userToken": "test-citizen-token-123",
+      "contactName": "Pooja Verma",
+      "contactPhone": "+91 98888 12345",
+      "category": "trapped",
+      "severity": "high",
+      "affectedCount": 4,
+      "description": "Ground floor water surge, 4 people trapped near terrace door",
+      "coordinates": {
+        "latitude": 30.7499,
+        "longitude": 76.6411,
+        "accuracy": 8
+      },
+      "locationSource": "Browser GPS (High Accuracy)",
+      "locationCaptureTime": "2026-10-16T04:19:48.223Z",
+      "status": "Received",
+      "assignedResponderId": null,
+      "assignedResponderName": null,
+      "createdAt": "2026-10-16T04:19:48.223Z",
+      "updatedAt": "2026-10-16T04:19:48.223Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-16T04:19:48.223Z",
+          "action": "SOS_RECEIVED",
+          "actorName": "Pooja Verma",
+          "actorRole": "citizen",
+          "details": "Incident received by server. Category: trapped, People affected: 4"
+        }
+      ]
+    },
+    {
+      "id": "SOS-1792127516862-84FB74",
+      "clientGeneratedId": "test-client-sos-1792127516858",
+      "userToken": "test-citizen-token-123",
+      "contactName": "Pooja Verma",
+      "contactPhone": "+91 98888 12345",
+      "category": "trapped",
+      "severity": "high",
+      "affectedCount": 4,
+      "description": "Ground floor water surge, 4 people trapped near terrace door",
+      "coordinates": {
+        "latitude": 30.7499,
+        "longitude": 76.6411,
+        "accuracy": 8
+      },
+      "locationSource": "Browser GPS (High Accuracy)",
+      "locationCaptureTime": "2026-10-16T05:11:56.859Z",
+      "status": "Received",
+      "assignedResponderId": null,
+      "assignedResponderName": null,
+      "createdAt": "2026-10-16T05:11:56.859Z",
+      "updatedAt": "2026-10-16T05:11:56.859Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-16T05:11:56.859Z",
+          "action": "SOS_RECEIVED",
+          "actorName": "Pooja Verma",
+          "actorRole": "citizen",
+          "details": "Incident received by server. Category: trapped, People affected: 4"
+        }
+      ]
+    },
+    {
+      "id": "sos-1792745016277-GCV7J",
+      "clientGeneratedId": "sos-1792745016277-GCV7J",
+      "userToken": "usr-1792740160365-49dcc6p",
+      "contactName": "Pankaj",
+      "contactPhone": "8795462135",
+      "category": "trapped",
+      "severity": "high",
+      "affectedCount": 5,
+      "description": "Building collapsed near toll plaza",
+      "coordinates": {
+        "latitude": 35.77015101748879,
+        "longitude": 80.5758739059791,
+        "accuracy": null
+      },
+      "locationSource": "Manual Coordinate Entry",
+      "locationCaptureTime": "2026-10-23T08:43:36.276Z",
+      "status": "Assigned",
+      "assignedResponderId": "usr-responder-01",
+      "assignedResponderName": "Officer Vikram (Quick Response Unit 1)",
+      "createdAt": "2026-10-23T08:43:36.301Z",
+      "updatedAt": "2026-10-23T08:44:50.480Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-23T08:43:36.301Z",
+          "action": "SOS_RECEIVED",
+          "actorName": "Pankaj",
+          "actorRole": "citizen",
+          "details": "Incident received by server. Category: trapped, People affected: 5"
+        },
+        {
+          "timestamp": "2026-10-23T08:44:50.480Z",
+          "action": "ASSIGNED_RESPONDER",
+          "actorName": "Chief Dispatcher Rao",
+          "actorRole": "dispatcher",
+          "details": "Incident assigned to Officer Vikram (Quick Response Unit 1) (usr-responder-01). Status: Assigned"
+        }
+      ]
+    },
+    {
+      "id": "SOS-1792745622706-519C6E",
+      "clientGeneratedId": "test-client-sos-1792745622700",
+      "userToken": "test-citizen-token-123",
+      "contactName": "Pooja Verma",
+      "contactPhone": "+91 98888 12345",
+      "category": "trapped",
+      "severity": "high",
+      "affectedCount": 4,
+      "description": "Ground floor water surge, 4 people trapped near terrace door",
+      "coordinates": {
+        "latitude": 30.7499,
+        "longitude": 76.6411,
+        "accuracy": 8
+      },
+      "locationSource": "Browser GPS (High Accuracy)",
+      "locationCaptureTime": "2026-10-23T08:53:42.702Z",
+      "status": "Resolved",
+      "assignedResponderId": "usr-responder-01",
+      "assignedResponderName": "Officer Vikram (Quick Response Unit 1)",
+      "createdAt": "2026-10-23T08:53:42.702Z",
+      "updatedAt": "2026-10-23T08:59:44.607Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-23T08:53:42.702Z",
+          "action": "SOS_RECEIVED",
+          "actorName": "Pooja Verma",
+          "actorRole": "citizen",
+          "details": "Incident received by server. Category: trapped, People affected: 4"
+        },
+        {
+          "timestamp": "2026-10-23T08:58:23.540Z",
+          "action": "ASSIGNED_RESPONDER",
+          "actorName": "Chief Dispatcher Rao",
+          "actorRole": "dispatcher",
+          "details": "Incident assigned to Officer Vikram (Quick Response Unit 1) (usr-responder-01). Status: Assigned"
+        },
+        {
+          "timestamp": "2026-10-23T08:58:27.454Z",
+          "action": "STATUS_CHANGED",
+          "actorName": "Chief Dispatcher Rao",
+          "actorRole": "dispatcher",
+          "details": "Status transitioned from Assigned to Assigned."
+        },
+        {
+          "timestamp": "2026-10-23T08:59:35.199Z",
+          "action": "STATUS_CHANGED",
+          "actorName": "Officer Vikram (Quick Response Unit 1)",
+          "actorRole": "responder",
+          "details": "Status transitioned from Assigned to Responding."
+        },
+        {
+          "timestamp": "2026-10-23T08:59:44.607Z",
+          "action": "STATUS_CHANGED",
+          "actorName": "Officer Vikram (Quick Response Unit 1)",
+          "actorRole": "responder",
+          "details": "Status transitioned from Responding to Resolved."
+        }
+      ]
+    }
+  ],
+  "hazards": [
+    {
+      "id": "HAZ-2026-DEMO-01",
+      "clientGeneratedId": "client-haz-seed-01",
+      "userToken": "token-demo-citizen-02",
+      "hazardType": "flooded_road",
+      "title": "Severe Waterlogging at Kharar Flyover Underpass",
+      "description": "Underpass flooded with ~3.5 feet of water. Vehicles stalled. Traffic diverted.",
+      "coordinates": {
+        "latitude": 30.742,
+        "longitude": 76.6495,
+        "accuracy": 15
+      },
+      "locationSource": "Browser GPS",
+      "locationCaptureTime": "2026-10-16T02:16:50.062Z",
+      "photoUrl": null,
+      "status": "verified",
+      "verifiedBy": "Chief Dispatcher Rao",
+      "verifiedAt": "2026-10-16T02:46:50.062Z",
+      "createdAt": "2026-10-16T02:16:50.062Z",
+      "updatedAt": "2026-10-16T02:46:50.062Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-16T02:16:50.062Z",
+          "action": "REPORT_SUBMITTED",
+          "actorName": "Anonymous Citizen",
+          "actorRole": "citizen",
+          "details": "Hazard report submitted with status Unverified"
+        },
+        {
+          "timestamp": "2026-10-16T02:46:50.062Z",
+          "action": "REPORT_VERIFIED",
+          "actorName": "Chief Dispatcher Rao",
+          "actorRole": "dispatcher",
+          "details": "Verified by local municipal traffic feed"
+        }
+      ]
+    },
+    {
+      "id": "HAZ-1792124210413-92356F",
+      "clientGeneratedId": "haz-test-1792124210410",
+      "userToken": "anon-citizen-token",
+      "hazardType": "flooded_road",
+      "title": "<script>alert(1)</script>Kharar Bus Stand Underpass Flooding",
+      "description": "3 feet standing water on north lane",
+      "coordinates": {
+        "latitude": 30.7435,
+        "longitude": 76.648,
+        "accuracy": 10
+      },
+      "locationSource": "Browser GPS",
+      "locationCaptureTime": "2026-10-16T04:16:50.413Z",
+      "photoUrl": null,
+      "status": "verified",
+      "verifiedBy": "Chief Dispatcher Rao",
+      "verifiedAt": "2026-10-16T04:16:50.449Z",
+      "createdAt": "2026-10-16T04:16:50.413Z",
+      "updatedAt": "2026-10-16T04:16:50.449Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-16T04:16:50.413Z",
+          "action": "REPORT_SUBMITTED",
+          "actorName": "Community Contributor",
+          "actorRole": "citizen",
+          "details": "Hazard report submitted for flooded_road. Initial status: unverified."
+        },
+        {
+          "timestamp": "2026-10-16T04:16:50.449Z",
+          "action": "HAZARD_STATUS_UPDATED",
+          "actorName": "Chief Dispatcher Rao",
+          "actorRole": "dispatcher",
+          "details": "Hazard status transitioned from unverified to verified. Note: Confirmed with traffic camera"
+        }
+      ]
+    },
+    {
+      "id": "HAZ-1792124270777-8978E1",
+      "clientGeneratedId": "haz-test-1792124270773",
+      "userToken": "anon-citizen-token",
+      "hazardType": "flooded_road",
+      "title": "<script>alert(1)</script>Kharar Bus Stand Underpass Flooding",
+      "description": "3 feet standing water on north lane",
+      "coordinates": {
+        "latitude": 30.7435,
+        "longitude": 76.648,
+        "accuracy": 10
+      },
+      "locationSource": "Browser GPS",
+      "locationCaptureTime": "2026-10-16T04:17:50.777Z",
+      "photoUrl": null,
+      "status": "verified",
+      "verifiedBy": "Chief Dispatcher Rao",
+      "verifiedAt": "2026-10-16T04:17:50.826Z",
+      "createdAt": "2026-10-16T04:17:50.777Z",
+      "updatedAt": "2026-10-16T04:17:50.826Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-16T04:17:50.777Z",
+          "action": "REPORT_SUBMITTED",
+          "actorName": "Community Contributor",
+          "actorRole": "citizen",
+          "details": "Hazard report submitted for flooded_road. Initial status: unverified."
+        },
+        {
+          "timestamp": "2026-10-16T04:17:50.826Z",
+          "action": "HAZARD_STATUS_UPDATED",
+          "actorName": "Chief Dispatcher Rao",
+          "actorRole": "dispatcher",
+          "details": "Hazard status transitioned from unverified to verified. Note: Confirmed with traffic camera"
+        }
+      ]
+    },
+    {
+      "id": "HAZ-1792124388589-1D9F4B",
+      "clientGeneratedId": "haz-test-1792124388585",
+      "userToken": "anon-citizen-token",
+      "hazardType": "flooded_road",
+      "title": "<script>alert(1)</script>Kharar Bus Stand Underpass Flooding",
+      "description": "3 feet standing water on north lane",
+      "coordinates": {
+        "latitude": 30.7435,
+        "longitude": 76.648,
+        "accuracy": 10
+      },
+      "locationSource": "Browser GPS",
+      "locationCaptureTime": "2026-10-16T04:19:48.589Z",
+      "photoUrl": null,
+      "status": "verified",
+      "verifiedBy": "Chief Dispatcher Rao",
+      "verifiedAt": "2026-10-16T04:19:48.645Z",
+      "createdAt": "2026-10-16T04:19:48.589Z",
+      "updatedAt": "2026-10-16T04:19:48.645Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-16T04:19:48.589Z",
+          "action": "REPORT_SUBMITTED",
+          "actorName": "Community Contributor",
+          "actorRole": "citizen",
+          "details": "Hazard report submitted for flooded_road. Initial status: unverified."
+        },
+        {
+          "timestamp": "2026-10-16T04:19:48.645Z",
+          "action": "HAZARD_STATUS_UPDATED",
+          "actorName": "Chief Dispatcher Rao",
+          "actorRole": "dispatcher",
+          "details": "Hazard status transitioned from unverified to verified. Note: Confirmed with traffic camera"
+        }
+      ]
+    },
+    {
+      "id": "HAZ-1792127517095-A50DC5",
+      "clientGeneratedId": "haz-test-1792127517094",
+      "userToken": "anon-citizen-token",
+      "hazardType": "flooded_road",
+      "title": "<script>alert(1)</script>Kharar Bus Stand Underpass Flooding",
+      "description": "3 feet standing water on north lane",
+      "coordinates": {
+        "latitude": 30.7435,
+        "longitude": 76.648,
+        "accuracy": 10
+      },
+      "locationSource": "Browser GPS",
+      "locationCaptureTime": "2026-10-16T05:11:57.095Z",
+      "photoUrl": null,
+      "status": "verified",
+      "verifiedBy": "Chief Dispatcher Rao",
+      "verifiedAt": "2026-10-16T05:11:57.128Z",
+      "createdAt": "2026-10-16T05:11:57.095Z",
+      "updatedAt": "2026-10-16T05:11:57.128Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-16T05:11:57.095Z",
+          "action": "REPORT_SUBMITTED",
+          "actorName": "Community Contributor",
+          "actorRole": "citizen",
+          "details": "Hazard report submitted for flooded_road. Initial status: unverified."
+        },
+        {
+          "timestamp": "2026-10-16T05:11:57.128Z",
+          "action": "HAZARD_STATUS_UPDATED",
+          "actorName": "Chief Dispatcher Rao",
+          "actorRole": "dispatcher",
+          "details": "Hazard status transitioned from unverified to verified. Note: Confirmed with traffic camera"
+        }
+      ]
+    },
+    {
+      "id": "HAZ-1792745622967-750E5A",
+      "clientGeneratedId": "haz-test-1792745622966",
+      "userToken": "anon-citizen-token",
+      "hazardType": "flooded_road",
+      "title": "<script>alert(1)</script>Kharar Bus Stand Underpass Flooding",
+      "description": "3 feet standing water on north lane",
+      "coordinates": {
+        "latitude": 30.7435,
+        "longitude": 76.648,
+        "accuracy": 10
+      },
+      "locationSource": "Browser GPS",
+      "locationCaptureTime": "2026-10-23T08:53:42.967Z",
+      "photoUrl": null,
+      "status": "verified",
+      "verifiedBy": "Chief Dispatcher Rao",
+      "verifiedAt": "2026-10-23T08:53:43.000Z",
+      "createdAt": "2026-10-23T08:53:42.967Z",
+      "updatedAt": "2026-10-23T08:53:43.000Z",
+      "auditHistory": [
+        {
+          "timestamp": "2026-10-23T08:53:42.967Z",
+          "action": "REPORT_SUBMITTED",
+          "actorName": "Community Contributor",
+          "actorRole": "citizen",
+          "details": "Hazard report submitted for flooded_road. Initial status: unverified."
+        },
+        {
+          "timestamp": "2026-10-23T08:53:43.000Z",
+          "action": "HAZARD_STATUS_UPDATED",
+          "actorName": "Chief Dispatcher Rao",
+          "actorRole": "dispatcher",
+          "details": "Hazard status transitioned from unverified to verified. Note: Confirmed with traffic camera"
+        }
+      ]
+    }
+  ]
+}

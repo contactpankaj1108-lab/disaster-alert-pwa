@@ -4,15 +4,22 @@ import {
   LayoutDashboard, 
   Bell, 
   MapPin, 
-  ShieldAlert 
+  ShieldAlert,
+  Shield
 } from 'lucide-react';
 import Home from './pages/Home';
 import Alerts from './pages/Alerts';
 import Resources from './pages/Resources';
 import Safety from './pages/Safety';
+import AuthorityDashboard from './pages/AuthorityDashboard';
 import NetworkStatus from './components/NetworkStatus';
 import InstallPwaButton from './components/InstallPwaButton';
 import OfflineBanner from './components/OfflineBanner';
+import OfflineQueueBanner from './components/OfflineQueueBanner';
+import SosModal from './components/SosModal';
+import MySosRequestsModal from './components/MySosRequestsModal';
+import HazardReportModal from './components/HazardReportModal';
+import AuthorityLoginModal from './components/AuthorityLoginModal';
 import { 
   getCurrentBrowserLocation, 
   getGeolocationPermissionState, 
@@ -21,6 +28,8 @@ import {
 import { syncDisasterTelemetry, getCachedTelemetry } from './services/alertService';
 import { saveToCache, getFromCache, CACHE_KEYS } from './services/cacheService';
 import { classifyNetworkError } from './utils/errorHandler';
+import { authorityAuth } from './services/authorityAuthService';
+import { syncOfflineQueues } from './services/offlineQueueService';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -39,6 +48,13 @@ function App() {
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const [location, setLocation] = useState(DEFAULT_LOCATION);
+
+  // Phase 1 Feature Modals & Auth State
+  const [isSosModalOpen, setIsSosModalOpen] = useState(false);
+  const [isMySosOpen, setIsMySosOpen] = useState(false);
+  const [isHazardModalOpen, setIsHazardModalOpen] = useState(false);
+  const [isAuthLoginOpen, setIsAuthLoginOpen] = useState(false);
+  const [isAuthorityAuthenticated, setIsAuthorityAuthenticated] = useState(() => authorityAuth.isAuthenticated());
 
   const [weatherData, setWeatherData] = useState({
     temperature: 28,
@@ -167,6 +183,9 @@ function App() {
       } else {
         handleSyncTelemetry(activeLoc);
       }
+
+      // 5. Check and resume any pending offline SOS or hazard transmissions
+      syncOfflineQueues();
     }
 
     boot();
@@ -304,6 +323,25 @@ function App() {
             <ShieldAlert size={15} />
             Safety Protocols
           </button>
+          <button
+            className={`tab-btn ${activeTab === 'authority' ? 'active' : ''}`}
+            onClick={() => {
+              if (authorityAuth.isAuthenticated()) {
+                setIsAuthorityAuthenticated(true);
+                setActiveTab('authority');
+              } else {
+                setIsAuthLoginOpen(true);
+              }
+            }}
+            style={{
+              marginLeft: 'auto',
+              border: '1px solid #cbd5e1'
+            }}
+            title="Authorized Dispatcher & Responder Command Portal"
+          >
+            <Shield size={15} color="#2563eb" />
+            Command Center {isAuthorityAuthenticated && '✓'}
+          </button>
         </nav>
       </header>
 
@@ -315,6 +353,11 @@ function App() {
         lastUpdated={lastUpdated}
         cacheAgeMinutes={cacheAgeMinutes}
         onRetryConnection={() => handleSyncTelemetry(location, true)}
+      />
+
+      {/* Phase 3: Persistent Offline SOS & Hazard Queue Banner */}
+      <OfflineQueueBanner
+        onOpenSosRequests={() => setIsMySosOpen(true)}
       />
 
       {/* Main Viewport Content */}
@@ -337,12 +380,62 @@ function App() {
             onRefreshData={() => handleSyncTelemetry(location, true)}
             isSyncing={isSyncing}
             isOfflineFallback={isOfflineFallback || isSimulatedOffline}
+            onOpenSosModal={() => setIsSosModalOpen(true)}
+            onOpenMySosRequests={() => setIsMySosOpen(true)}
+            onOpenHazardModal={() => setIsHazardModalOpen(true)}
           />
         )}
         {activeTab === 'alerts' && <Alerts alerts={alerts} />}
-        {activeTab === 'resources' && <Resources initialFilter={activeFilter} location={location} />}
+        {activeTab === 'resources' && (
+          <Resources
+            initialFilter={activeFilter}
+            location={location}
+            onOpenReportHazard={() => setIsHazardModalOpen(true)}
+          />
+        )}
         {activeTab === 'safety' && <Safety />}
+        {activeTab === 'authority' && (
+          <AuthorityDashboard
+            onLogout={() => {
+              setIsAuthorityAuthenticated(false);
+              setActiveTab('home');
+            }}
+            onNavigateHome={() => setActiveTab('home')}
+          />
+        )}
       </main>
+
+      {/* Phase 1 Modals */}
+      <SosModal
+        isOpen={isSosModalOpen}
+        onClose={() => setIsSosModalOpen(false)}
+        initialLocation={location}
+        isOnline={isOnline && !isSimulatedOffline}
+        onSosSubmitted={() => {
+          setIsMySosOpen(true);
+        }}
+      />
+
+      <MySosRequestsModal
+        isOpen={isMySosOpen}
+        onClose={() => setIsMySosOpen(false)}
+      />
+
+      <HazardReportModal
+        isOpen={isHazardModalOpen}
+        onClose={() => setIsHazardModalOpen(false)}
+        initialLocation={location}
+        isOnline={isOnline && !isSimulatedOffline}
+      />
+
+      <AuthorityLoginModal
+        isOpen={isAuthLoginOpen}
+        onClose={() => setIsAuthLoginOpen(false)}
+        onLoginSuccess={() => {
+          setIsAuthorityAuthenticated(true);
+          setActiveTab('authority');
+        }}
+      />
 
       {/* Application Footer */}
       <footer className="app-footer">
